@@ -32,6 +32,6 @@ jobs:
           registry: ghcr.io
           dockerfile: Containerfile
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CR_PAT }}
           # if the branch is main, add the latest tag
           addLatest: true
