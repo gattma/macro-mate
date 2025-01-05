@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacroMate Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #1e1e2f;
+            color: #ffffff;
+        }
+        .card {
+            background: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .header-gradient {
+            background: linear-gradient(to right, #e14eca, #ba54f5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-container {
+            position: relative;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .header-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+            rgba(225, 78, 202, 0),
+            rgba(225, 78, 202, 0.5),
+            rgba(186, 84, 245, 0.5),
+            rgba(186, 84, 245, 0));
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(225, 78, 202, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(225, 78, 202, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(225, 78, 202, 0);
+            }
+        }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0; /* Aligns to the left of the apple logo */
+            /* Ensures the dropdown sits on top of other elements */
+            background-color: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.375rem;
+            display: none;
+            min-width: 180px; /* Adjust as needed */
+            padding: 0.5rem 0;
+            z-index: 50;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+        }
+        .dropdown-menu a:hover {
+            background-color: rgba(225, 78, 202, 0.2);
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+
+        .form-input {
+            background: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .form-input:focus {
+            border-color: #e14eca;
+            outline: none;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #e14eca, #ba54f5);
+            transition: opacity 0.3s;
+        }
+        .submit-button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="container mx-auto px-4 py-6">
+    <div class="header-container">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-4 relative">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center pulse cursor-pointer" id="apple-logo">
+                    <i class="fas fa-apple-alt text-white text-xl"></i>
+                </div>
+                <div id="nav-dropdown" class="dropdown-menu">
+                    <a href="/">Dashboard</a>
+                    <a href="/create">Neues Produkt</a>
+                </div>
+
+                <div>
+                    <h1 class="text-4xl font-bold header-gradient">MacroMate</h1>
+                    <p class="text-gray-400 text-sm">Nutritional Intelligence Dashboard</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card rounded-lg overflow-hidden p-6">
+        <form id="addFoodForm" class="space-y-6">
+            <div>
+                <label class="block text-gray-400 mb-2">Product Name</label>
+                <input type="text" name="product_name" class="form-input w-full px-4 py-3 rounded-lg" required>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-gray-400 mb-2">Energy (per 100g)</label>
+                    <input type="number" step="0.1" name="energy_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">Carbohydrates (per 100g)</label>
+                    <input type="number" step="0.1" name="carbohydrates_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">Sugars (per 100g)</label>
+                    <input type="number" step="0.1" name="sugars_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">Fat (per 100g)</label>
+                    <input type="number" step="0.1" name="fat_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">Salt (per 100g)</label>
+                    <input type="number" step="0.1" name="salt_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-2">Proteins (per 100g)</label>
+                    <input type="number" step="0.1" name="proteins_100g" class="form-input w-full px-4 py-3 rounded-lg" required>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="submit-button px-6 py-3 rounded-lg text-white font-semibold">
+                    Add Food
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+
+    document.getElementById('addFoodForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const newEntry = {
+            product_name: formData.get('product_name'),
+            nutriments: {
+                energy_100g: parseFloat(formData.get('energy_100g')),
+                carbohydrates_100g: parseFloat(formData.get('carbohydrates_100g')),
+                sugars_100g: parseFloat(formData.get('sugars_100g')),
+                fat_100g: parseFloat(formData.get('fat_100g')),
+                salt_100g: parseFloat(formData.get('salt_100g')),
+                proteins_100g: parseFloat(formData.get('proteins_100g')),
+            }
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/macromate/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body:  JSON.stringify(newEntry)
+            });
+
+            if (response.ok) {
+                alert('Food added successfully!');
+                e.target.reset();
+            } else {
+                alert('Error adding food. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error adding food. Please try again.');
+        }
+    });
+
+    // ##### NAVIGATION #####
+    const appleLogo = document.getElementById('apple-logo');
+    const navDropdown = document.getElementById('nav-dropdown');
+
+    appleLogo.addEventListener('click', function(){
+        navDropdown.classList.toggle('active')
+    })
+
+    document.addEventListener('click', function(event) {
+        if(!appleLogo.contains(event.target) && !navDropdown.contains(event.target)){
+            navDropdown.classList.remove('active')
+        }
+    });
+
+</script>
+</body>
+</html>

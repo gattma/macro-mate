@@ -1,0 +1,21 @@
+### GET request to example server
+GET http://localhost:8080/api/v1/appdoc/list/10
+
+###
+GET http://localhost:8080/api/v1/macromate/search?q=Apfel
+
+###
+POST http://localhost:8080/api/v1/macromate/add
+Content-Type: application/json
+
+{
+  "product_name": "gattma",
+  "nutriments": {
+    "energy_100g": 20.0,
+    "carbohydrates_100g": "5",
+    "sugars_100g": "10",
+    "fat_100g": "4",
+    "salt_100g": "3",
+    "proteins_100g": "2"
+  }
+}

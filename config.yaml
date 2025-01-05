@@ -1,0 +1,11 @@
+database:
+  url: "mongodb://127.0.0.1:27017"
+  dbname: "off"
+  collection: "products"
+
+server:
+  port: "8080"
+
+app:
+  name: "macro-mate"
+  timeout: "30"

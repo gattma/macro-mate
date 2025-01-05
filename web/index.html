@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacroMate Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #1e1e2f;
+            color: #ffffff;
+        }
+        .card {
+            background: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .search-input {
+            background: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .search-input:focus {
+            border-color: #e14eca;
+            outline: none;
+        }
+        .header-gradient {
+            background: linear-gradient(to right, #e14eca, #ba54f5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-container {
+            position: relative;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .header-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right,
+            rgba(225, 78, 202, 0),
+            rgba(225, 78, 202, 0.5),
+            rgba(186, 84, 245, 0.5),
+            rgba(186, 84, 245, 0));
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(225, 78, 202, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(225, 78, 202, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(225, 78, 202, 0);
+            }
+        }
+        .selectable-row {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .selectable-row:hover {
+            background: rgba(225, 78, 202, 0.1);
+        }
+        .selected {
+            background: rgba(225, 78, 202, 0.2);
+        }
+        .gram-input {
+            background: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 80px;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+        }
+        .gram-input:focus {
+            border-color: #e14eca;
+            outline: none;
+        }
+        .calculated-value {
+            color: #e14eca;
+            font-weight: bold;
+        }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0; /* Aligns to the left of the apple logo */
+            /* Ensures the dropdown sits on top of other elements */
+            background-color: rgba(30, 30, 47, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.375rem;
+            display: none;
+            min-width: 180px; /* Adjust as needed */
+            padding: 0.5rem 0;
+            z-index: 50;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+        }
+        .dropdown-menu a:hover {
+            background-color: rgba(225, 78, 202, 0.2);
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="container mx-auto px-4 py-6">
+    <div class="header-container">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-4 relative">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center pulse cursor-pointer" id="apple-logo">
+                    <i class="fas fa-apple-alt text-white text-xl"></i>
+                </div>
+                <div id="nav-dropdown" class="dropdown-menu">
+                    <a href="/">Dashboard</a>
+                    <a href="/create">Neues Produkt</a>
+                </div>
+
+                <div>
+                    <h1 class="text-4xl font-bold header-gradient">MacroMate</h1>
+                    <p class="text-gray-400 text-sm">Nutritional Intelligence Dashboard</p>
+                </div>
+            </div>
+            <div class="relative w-full md:w-1/3">
+                <div class="relative">
+                    <input
+                            type="text"
+                            id="searchInput"
+                            class="search-input w-full px-4 py-3 rounded-lg pl-10"
+                            placeholder="Search products..."
+                    >
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card rounded-lg overflow-hidden mb-8">
+        <div class="p-4 border-b border-gray-800">
+            <h2 class="text-xl font-bold header-gradient">Selected Items</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left">
+                    <th class="px-6 py-4 text-gray-400">Product Name</th>
+                    <th class="px-6 py-4 text-gray-400">Grams</th>
+                    <th class="px-6 py-4 text-gray-400">kcal</th>
+                    <th class="px-6 py-4 text-gray-400">Carbs</th>
+                    <th class="px-6 py-4 text-gray-400">Sugar</th>
+                    <th class="px-6 py-4 text-gray-400">Fat</th>
+                    <th class="px-6 py-4 text-gray-400">Salt</th>
+                    <th class="px-6 py-4 text-gray-400">Proteins</th>
+                    <th class="px-6 py-4 text-gray-400">Action</th>
+                </tr>
+                </thead>
+                <tbody id="selectedItemsTable">
+                </tbody>
+                <tfoot>
+                <tr class="border-t border-gray-800">
+                    <td colspan="2" class="px-6 py-4 text-right font-bold">Total Calories:</td>
+                    <td id="totalCalories" class="px-6 py-4 calculated-value">0 kcal</td>
+                    <td id="totalCarbs" class="px-6 py-4 calculated-value">0 g</td>
+                    <td id="totalSugar" class="px-6 py-4 calculated-value">0 g</td>
+                    <td id="totalFat" class="px-6 py-4 calculated-value">0 g</td>
+                    <td id="totalSalt" class="px-6 py-4 calculated-value">0 g</td>
+                    <td id="totalProteins" class="px-6 py-4 calculated-value">0 g</td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="card rounded-lg overflow-hidden">
+        <div class="p-4 border-b border-gray-800">
+            <h2 class="text-xl font-bold header-gradient">Search Results</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left">
+                    <th class="px-6 py-4 text-gray-400">Product Name</th>
+                    <th class="px-6 py-4 text-gray-400">Energy</th>
+                    <th class="px-6 py-4 text-gray-400">Energy (kcal)</th>
+                    <th class="px-6 py-4 text-gray-400">Carbs</th>
+                    <th class="px-6 py-4 text-gray-400">Sugar</th>
+                    <th class="px-6 py-4 text-gray-400">Fat</th>
+                    <th class="px-6 py-4 text-gray-400">Salt</th>
+                    <th class="px-6 py-4 text-gray-400">Proteins</th>
+                </tr>
+                </thead>
+                <tbody id="resultsTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let searchTimeout;
+    let selectedItems = {};
+    const searchInput = document.getElementById('searchInput');
+    const resultsTable = document.getElementById('resultsTable');
+    const selectedItemsTable = document.getElementById('selectedItemsTable');
+    const totalCaloriesElement = document.getElementById('totalCalories');
+    const totalCarbsElement = document.getElementById('totalCarbs');
+    const totalSugarElement = document.getElementById('totalSugar');
+    const totalFatElement = document.getElementById('totalFat')
+    const totalSaltElement = document.getElementById('totalSalt');
+    const totalProteinsElement = document.getElementById('totalProteins');
+
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = e.target.value;
+            if (query.length >= 2) {
+                performSearch(query);
+            }
+        }, 300);
+    });
+
+    async function performSearch(query) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/macromate/search?q=${query}`);
+            const data = await response.json();
+            updateResults(data.data.Data);
+        } catch (error) {
+            console.error('Search error:', error);
+        }
+    }
+
+    function updateResults(products) {
+        resultsTable.innerHTML = products.map(product => `
+                <tr class="border-t border-gray-800 selectable-row ${selectedItems[product.id] ? 'selected' : ''}"
+                    data-product='${JSON.stringify(product)}'
+                    onclick="handleRowClick(this)">
+                    <td class="px-6 py-4">${product.product_name}</td>
+                    <td class="px-6 py-4">${product.nutriments.energy_100g || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['energy-kcal_100g'] || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['carbohydrates_100g'] || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['sugars_100g'] || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['fat_100g'] || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['salt_100g'] || 0}</td>
+                    <td class="px-6 py-4">${product.nutriments['proteins_100g'] || 0}</td>
+                </tr>
+            `).join('');
+    }
+
+    function handleRowClick(row) {
+        const product = JSON.parse(row.dataset.product);
+        toggleSelection(product);
+    }
+
+    function updateSelectedItems() {
+        selectedItemsTable.innerHTML = Object.values(selectedItems).map(product => `
+                <tr class="border-t border-gray-800">
+                    <td class="px-6 py-4">${product.product_name}</td>
+                    <td class="px-6 py-4">
+                        <input type="input"
+                               value="${product.grams || 100}"
+                               min="0"
+                               class="gram-input"
+                               onchange="updateGrams('${product.id}', this.value)"
+                               onclick="event.stopPropagation()">
+                    </td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['energy-kcal_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['carbohydrates_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['sugars_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['fat_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['salt_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4 calculated-value">${calculateGrams(product.nutriments['proteins_100g'] || 0, product.grams || 100)}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="event.stopPropagation(); removeSelection('${product.id}')"
+                                class="text-red-500 hover:text-red-400">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        updateTotal();
+    }
+
+    function updateGrams(productId, grams) {
+        if (selectedItems[productId]) {
+            selectedItems[productId].grams = parseFloat(grams) || 0;
+            updateSelectedItems();
+        }
+    }
+
+    function calculateGrams(valPer100g, grams) {
+        return ((valPer100g * grams) / 100).toFixed(1);
+    }
+
+    function calculateSum(key) {
+        return Object.values(selectedItems).reduce((sum, product) => {
+            return sum + parseFloat(calculateGrams(product.nutriments[key] || 0, product.grams || 100));
+        }, 0);
+    }
+
+    function updateTotal() {
+        const totalCalories = calculateSum('energy-kcal_100g');
+        totalCaloriesElement.textContent = `${totalCalories.toFixed(1)} kcal`;
+        const totalCarbs = calculateSum('carbohydrates_100g');
+        totalCarbsElement.textContent = `${totalCarbs.toFixed(1)} g`;
+        const totalSugars = calculateSum('sugars_100g');
+        totalSugarElement.textContent = `${totalSugars.toFixed(1)} g`;
+        const totalFat = calculateSum('fat_100g');
+        totalFatElement.textContent = `${totalFat.toFixed(1)} g`;
+        const totalSalt = calculateSum('salt_100g');
+        totalSaltElement.textContent = `${totalSalt.toFixed(1)} g`;
+        const totalProteins = calculateSum('proteins_100g');
+        totalProteinsElement.textContent = `${totalProteins.toFixed(1)} g`;
+    }
+
+    function toggleSelection(product) {
+        if (selectedItems[product.id]) {
+            delete selectedItems[product.id];
+        } else {
+            selectedItems[product.id] = {...product, grams: 100};
+        }
+        updateSelectedItems();
+        const row = document.querySelector(`tr[data-product*='"id":"${product.id}"']`);
+        if (row) {
+            row.classList.toggle('selected');
+        }
+    }
+
+    function removeSelection(id) {
+        delete selectedItems[id];
+        updateSelectedItems();
+        const row = document.querySelector(`tr[data-product*='"id":"${id}"']`);
+        if (row) {
+            row.classList.remove('selected');
+        }
+    }
+
+    // ##### NAVIGATION ######
+    const appleLogo = document.getElementById('apple-logo');
+    const navDropdown = document.getElementById('nav-dropdown');
+    appleLogo.addEventListener('click', function(){
+        navDropdown.classList.toggle('active')
+    })
+
+    document.addEventListener('click', function(event) {
+        if(!appleLogo.contains(event.target) && !navDropdown.contains(event.target)){
+            navDropdown.classList.remove('active')
+        }
+    });
+
+</script>
+</body>
+</html>

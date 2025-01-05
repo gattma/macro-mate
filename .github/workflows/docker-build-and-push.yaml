@@ -1,0 +1,37 @@
+
+name: Build and release Containerimage
+
+on:
+  push:
+    branches:
+      - kustomize
+  workflow_dispatch:
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: checkout
+
+      # set the env.BRANCH_NAME variable
+      - uses: nelonoel/branch-name@v1.0.1
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      # set the env.COMMIT variable
+      - run: echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # build the container image and release it as a package in this repository
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: push-container-image
+        with:
+          image: macro-mate
+          registry: ghcr.io
+          dockerfile: Containerfile
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          # if the branch is main, add the latest tag
+          addLatest: true
